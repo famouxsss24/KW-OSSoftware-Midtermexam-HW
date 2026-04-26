@@ -13,7 +13,7 @@ import plotly.graph_objects as go
 
 
 # 페이지 기본설정
-# 이거 안 해주면 탭 제목이 그냥 streamlit 으로 뜸
+# 이거 안 해주면 탭 제목이 그냥 streamlit 으로 
 st.set_page_config(
     page_title="나는 어떤 무기체계 개발자일까?",
     page_icon="🛡️",
@@ -28,17 +28,17 @@ USERS_PATH = os.path.join(DATA_DIR, "users.json")
 STATS_PATH = os.path.join(DATA_DIR, "stats.json")
 BG_IMAGE_PATH = os.path.join(DATA_DIR, "background.png")
 
-# 처음 실행했을 때 data 폴더 없으면 에러나서 추가함
+# 처음 실행했을 때 data 폴더 없으면 에러나서 추가
 os.makedirs(DATA_DIR, exist_ok=True)
 
 
 # 회원가입 규칙
-# 영문/숫자만 - 정규식 처음 써봤는데 ^...$ 가 처음~끝까지란 뜻이라고 함
+# 영문/숫자만 - 정규식..? 일단 ^...$ 가 처음~끝까지란 뜻
 ID_REGEX = re.compile(r"^[a-zA-Z0-9]+$")
 MIN_PW_LEN = 4
 
-# 처음에 비밀번호 평문으로 저장했다가 그러면 안 된다고 해서 해시 적용함
-# 시연용 기본 계정 3개
+# 처음에 비밀번호 평문으로 저장했다가 그러면 안 된다고 해서 해시 적용
+# 시연용 기본 계정 
 DEFAULT_USERS = {
     "유명현": "2023204088",
     "admin": "admin123",
@@ -46,16 +46,16 @@ DEFAULT_USERS = {
 }
 
 
-# ============================================================
+
 # 퀴즈 데이터
-# ============================================================
-# 처음엔 개발자스러운 질문(MCU, 프로토콜...) 만 넣었는데
-# 친구한테 풀어보라 하니까 못 풀더라고. 그래서 일상 질문으로 다 갈아엎음.
+
+# 처음엔 개발자스러운 질문(MCU, 프로토콜...) 만 넣었으나
+# 친구한테 풀어보라 했더니 못 풀어서 일상 질문으로 다 갈아엎기
 # 4가지 유형:
-#   guided   = 정확한 계산/모델링 좋아하는 사람
-#   ew       = 숨은 단서 찾는 탐정 스타일
-#   fcs      = 큰 그림/시스템 짜는 스타일
-#   embedded = 손으로 직접 만드는 스타일
+#   guided   = 정확한 계산/모델링 좋아하는 느김
+#   ew       = 숨은 단서 찾는 느낌
+#   fcs      = 큰 그림/시스템 짜는 느낌
+#   embedded = 손으로 직접 만드는 느낌
 QUESTIONS = [
     {
         "q": "새로운 프로젝트나 모임을 시작할 때, 나는 주로?",
@@ -150,7 +150,7 @@ QUESTIONS = [
 ]
 
 # 결과 데이터
-# 처음엔 외부 json 파일로 뺐다가 그냥 코드에 박는게 편해서 다시 가져옴
+# 처음엔 외부 json 파일로 뺐다가 그냥 코드에 박는게 편해서 다시 가져오기
 RESULTS = {
     "guided": {
         "emoji": "🎯",
@@ -255,17 +255,17 @@ TYPE_LABELS = {
 }
 
 
-# ============================================================
+
 # 비밀번호 해시 / 사용자 파일
-# ============================================================
+
 def hash_password(pw):
     # SHA-256 으로 단방향 해시
-    # encode 안 해서 에러났었음. 문자열을 바이트로 바꿔야 한다고 함
+    # encode 안 해서 에러났었음. 문자열을 바이트로 바꿔야 
     return hashlib.sha256(pw.encode("utf-8")).hexdigest()
 
 
 def load_users():
-    # 처음 실행이면 users.json 이 없으니까 기본 계정으로 만들어 둠
+    # 처음 실행이면 users.json 이 없으니까 기본 계정으로 
     if not os.path.exists(USERS_PATH):
         initial = {}
         for username in DEFAULT_USERS:
@@ -284,12 +284,12 @@ def save_users(users):
         json.dump(users, f, ensure_ascii=False, indent=2)
 
 
-# ============================================================
+
 # 통계 파일 (전체 사용자 결과 카운트)
-# ============================================================
+
 def load_stats():
     if not os.path.exists(STATS_PATH):
-        # 첫 실행이면 0으로 초기화해서 만들어두기
+        # 첫 실행이면 0으로 초기화해서 만들기
         empty = {"guided": 0, "ew": 0, "fcs": 0, "embedded": 0}
         with open(STATS_PATH, "w", encoding="utf-8") as f:
             json.dump(empty, f, ensure_ascii=False, indent=2)
@@ -306,10 +306,10 @@ def add_stat(result_type):
         json.dump(stats, f, ensure_ascii=False, indent=2)
 
 
-# ============================================================
+
 # 캐싱 - 안 바뀌는 데이터는 한 번만 읽고 들고 있게
-# (수업에서 배운 거 그대로 적용)
-# ============================================================
+
+
 @st.cache_data
 def get_questions():
     return QUESTIONS
@@ -322,22 +322,21 @@ def get_results():
 
 @st.cache_data
 def get_background_b64():
-    # 배경 이미지가 있으면 base64 로 인코딩해서 들고있기
-    # 없으면 None 돌려서 fallback 그라데이션이 깔리게 함
+    # 배경 이미지가 있으면 base64 로 인코딩
+    # 없으면 None 돌려서 fallback 그라데이션이 깔리게
     if not os.path.exists(BG_IMAGE_PATH):
         return None
     with open(BG_IMAGE_PATH, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
 
 
-# ============================================================
 # 전역 CSS
-# Streamlit 은 배경 바꾸는 메뉴가 없어서 이렇게 직접 주입해야 함
-# ============================================================
+# Streamlit 은 배경 바꾸는 메뉴가 없어서 이렇게 직접 주입해야 ㅠㅠ
+
 def inject_global_css():
     bg_b64 = get_background_b64()
 
-    # 배경 이미지가 있으면 그걸로, 없으면 진한 군용 그라데이션으로
+    # 배경 이미지가 있으면 그걸로, 없으면 그라데이션
     if bg_b64 is not None:
         bg_layer = (
             "linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),"
@@ -348,7 +347,7 @@ def inject_global_css():
         bg_layer = "radial-gradient(circle at 30% 20%, #1a2a1a 0%, #050505 70%)"
         bg_size = "auto"
 
-    # 큰 제목이 두 줄로 밀려서 max-width 늘리고 nowrap 추가함
+    # 큰 제목이 두 줄로 밀려서 max-width 늘리고 nowrap 추가
     css = """
     <style>
     .stApp {
@@ -438,11 +437,11 @@ def inject_global_css():
     st.markdown(css, unsafe_allow_html=True)
 
 
-# ============================================================
+
 # 세션 상태 초기화
 # Streamlit 은 버튼 누를 때마다 코드를 다시 돌려서
 # 일반 변수에 저장하면 사라짐. session_state 에 넣어야 살아있음.
-# ============================================================
+
 def init_session():
     if "page" not in st.session_state:
         st.session_state["page"] = "welcome"
@@ -469,9 +468,9 @@ def reset_quiz():
     st.session_state["final_type"] = None
 
 
-# ============================================================
+
 # 페이지 - 처음 화면
-# ============================================================
+
 def page_welcome():
     st.title("🛡️ 나는 어떤 무기체계 개발자일까?")
     st.caption("만약 내가 무기체계 개발자라면?")
@@ -498,9 +497,9 @@ def page_welcome():
             goto("signup")
 
 
-# ============================================================
+
 # 페이지 - 로그인
-# ============================================================
+
 def page_login():
     st.title("로그인")
     users = load_users()
@@ -531,11 +530,11 @@ def page_login():
         goto("welcome")
 
 
-# ============================================================
+
 # 페이지 - 회원가입
 # 검증 5종 세트 (빈값/형식/길이/일치/중복)
 # 처음엔 함수로 분리했었는데 그냥 여기 다 적는 게 보기 편해서 풀었음
-# ============================================================
+
 def page_signup():
     st.title("회원가입")
     st.caption("아이디는 영문/숫자만 가능, 비밀번호는 최소 4자 이상")
@@ -575,11 +574,10 @@ def page_signup():
         goto("login")
 
 
-# ============================================================
 # 페이지 - 퀴즈
 # 처음엔 카운터로 점수만 쌓았는데 '이전 문항' 기능 때문에
 # 답을 리스트로 저장하는 구조로 바꿈
-# ============================================================
+
 def page_quiz():
     questions = get_questions()
     idx = st.session_state["q_index"]
@@ -670,7 +668,7 @@ def calc_result(answers, questions):
         type_key = questions[i]["options"][answers[i]][1]
         score[type_key] = score[type_key] + 1
 
-    # 최댓값 유형 찾기 (max() 한 줄로 되긴 하는데 헷갈려서 풀어서 씀)
+    # 최댓값 유형 찾기 (max() 한 줄로 되긴 하는데 헷갈려서 풀어서)
     final_type = "guided"
     max_count = -1
     for k in score:
@@ -680,10 +678,10 @@ def calc_result(answers, questions):
     return final_type
 
 
-# ============================================================
+
 # 페이지 - 결과
 # A1 레이더 / A2 공부과목 / C2 통계 한 페이지에 다 들어감
-# ============================================================
+
 def page_result():
     final_type = st.session_state["final_type"]
     if final_type is None:
@@ -755,9 +753,8 @@ def page_result():
             goto("welcome")
 
 
-# ============================================================
 # 차트 만드는 함수들
-# ============================================================
+
 def score_by_type(answers, questions):
     # 결과 페이지 레이더 그릴 때 쓸 점수 - 위 calc_result 랑 거의 같음
     # TODO: 나중에 합칠 수 있을 듯
@@ -848,11 +845,11 @@ def show_stats_chart(stats, highlight):
     st.caption("누적 응답 " + str(total) + "건 - 내 결과는 강조색으로 표시")
 
 
-# ============================================================
+
 # 메인 - 페이지 전환
 # 처음엔 PAGES dict 로 dispatch 하는 패턴 썼는데
 # 너무 헷갈려서 그냥 if/elif 로 풀어버림
-# ============================================================
+
 def main():
     init_session()
     inject_global_css()
